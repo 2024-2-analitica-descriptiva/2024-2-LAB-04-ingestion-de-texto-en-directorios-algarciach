@@ -71,3 +71,54 @@ def pregunta_01():
 
 
     """
+    import os
+    import pandas as pd
+
+    if not os.path.exists("./files/output"):
+        os.makedirs("./files/output")
+
+    sentiments = ["positive", "negative", "neutral"]
+
+    def load_train_data():
+        train_data = []
+
+        for sentiment in sentiments:
+            my_path = f"./files/input/train/{sentiment}/"
+            for file in os.listdir(my_path):                
+                phrase_df = pd.read_csv(os.path.join(my_path, file), names=["phrase"])
+                phrase_df["target"] = sentiment
+                train_data.append(phrase_df)
+
+        train_df = pd.concat(train_data, ignore_index=True)
+        return train_df
+
+    def load_test_data():
+        test_data = []
+
+        for sentiment in sentiments:
+            my_path = f"./files/input/test/{sentiment}/"
+            for file in os.listdir(my_path):                
+                phrase_df = pd.read_csv(os.path.join(my_path, file), names=["phrase"])
+                phrase_df["target"] = sentiment
+                test_data.append(phrase_df)
+
+        test_df = pd.concat(test_data, ignore_index=True)
+        return test_df
+
+    def create_train_dataset(df):
+        df.to_csv("./files/output/train_dataset.csv")
+        
+    def create_test_dataset(df):
+        df.to_csv("./files/output/test_dataset.csv")
+
+
+    def main():
+        train_df = load_train_data()
+        test_df = load_test_data()
+        create_train_dataset(train_df)
+        create_test_dataset(test_df)
+
+    return main()
+
+if __name__ == '__main__':
+    pregunta_01()
